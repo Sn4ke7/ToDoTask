@@ -24,49 +24,41 @@ namespace ToDoTask.Controllers
 		// GET: TaskController/Details/5
 		public ActionResult Details(int id)
 		{
-			return View();
+			return View(tasks.FirstOrDefault(x => x.TaskId == id));
 		}
 
 		// GET: TaskController/Create
 		public ActionResult Create()
 		{
-			return View();
+			return View(new TaskModel());
 		}
 
 		// POST: TaskController/Create
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Create(IFormCollection collection)
+		public ActionResult Create(TaskModel taskModel)
 		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
+			taskModel.TaskId = tasks.Count + 1;
+			tasks.Add(taskModel);
+			 
+			return RedirectToAction(nameof(Index));			
 		}
 
 		// GET: TaskController/Edit/5
 		public ActionResult Edit(int id)
 		{
-			return View();
+			return View(tasks.FirstOrDefault(x => x.TaskId == id));
 		}
 
 		// POST: TaskController/Edit/5
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Edit(int id, IFormCollection collection)
+		public ActionResult Edit(int id, TaskModel taskModel)
 		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
+			TaskModel task = tasks.FirstOrDefault(x => x.TaskId == id);
+			task.Name = taskModel.Name;
+			task.Description = taskModel.Description;
+			return RedirectToAction(nameof(Index));
 		}
 
 		// GET: TaskController/Delete/5

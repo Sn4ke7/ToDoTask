@@ -15,13 +15,13 @@ namespace ToDoTask.Controllers
 			new TaskModel(){ TaskId = 1, Name = "Sprawdzić Maile", Description = "Godzina 9:15", Done = false},
 			new TaskModel(){ TaskId = 2, Name = "StandUp", Description = "Godzina 10:00", Done = false}
 		};
-		// GET: TaskController
+		// GET: Task
 		public ActionResult Index()
 		{
-			return View(tasks);
+			return View(tasks.Where(x => !x.Done));
 		}
 
-		// GET: TaskController/Details/5
+		// GET: Task/Details/5
 		public ActionResult Details(int id)
 		{
 			return View(tasks.FirstOrDefault(x => x.TaskId == id));
@@ -33,7 +33,7 @@ namespace ToDoTask.Controllers
 			return View(new TaskModel());
 		}
 
-		// POST: TaskController/Create
+		// POST: Task/Create
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Create(TaskModel taskModel)
@@ -44,13 +44,13 @@ namespace ToDoTask.Controllers
 			return RedirectToAction(nameof(Index));			
 		}
 
-		// GET: TaskController/Edit/5
+		// GET: Task/Edit/5
 		public ActionResult Edit(int id)
 		{
 			return View(tasks.FirstOrDefault(x => x.TaskId == id));
 		}
 
-		// POST: TaskController/Edit/5
+		// POST: Task/Edit/5
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public ActionResult Edit(int id, TaskModel taskModel)
@@ -61,25 +61,29 @@ namespace ToDoTask.Controllers
 			return RedirectToAction(nameof(Index));
 		}
 
-		// GET: TaskController/Delete/5
+		// GET: Task/Delete/5
 		public ActionResult Delete(int id)
 		{
-			return View();
+			return View(tasks.FirstOrDefault(x => x.TaskId == id));
 		}
 
-		// POST: TaskController/Delete/5
+		// POST: Task/Delete/5
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public ActionResult Delete(int id, IFormCollection collection)
+		public ActionResult Delete(int id, TaskModel taskModel)
 		{
-			try
-			{
-				return RedirectToAction(nameof(Index));
-			}
-			catch
-			{
-				return View();
-			}
+			TaskModel task = tasks.FirstOrDefault(x => x.TaskId == id);
+			tasks.Remove(task);
+			return RedirectToAction(nameof(Index));
+		}
+
+		// POST: Task/Delete/5
+		public ActionResult Done(int id)
+		{
+			TaskModel task = tasks.FirstOrDefault(x => x.TaskId == id);
+			task.Done = true;
+
+			return RedirectToAction(nameof(Index)); 
 		}
 	}
 }
